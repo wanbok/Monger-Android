@@ -1,4 +1,4 @@
-package com.wanbok.smscatcher
+package com.wanbok.monger
 
 import android.app.Application
 import android.test.ApplicationTestCase

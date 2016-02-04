@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SMSCatcher.iml" filepath="$PROJECT_DIR$/SMSCatcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Monger-Android.iml" filepath="$PROJECT_DIR$/Monger-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

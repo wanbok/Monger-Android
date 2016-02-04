@@ -1,2 +1,3 @@
-# SMSCatcher-Android
-A Simple SMS Catcher for Android
+Monger-Android
+==============
+Monger, A simple SMS notifier to Slack

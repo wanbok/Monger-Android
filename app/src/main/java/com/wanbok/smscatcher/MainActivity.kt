@@ -1,4 +1,4 @@
-package com.wanbok.smscatcher
+package com.wanbok.monger
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
