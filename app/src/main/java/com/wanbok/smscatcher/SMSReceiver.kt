@@ -6,6 +6,7 @@ import android.content.Intent
 import android.telephony.SmsMessage
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
+import com.github.salomonbrys.kotson.jsonObject
 
 /**
  * Created by wanbok on 16. 1. 30..
@@ -33,12 +34,11 @@ class SMSReceiver: BroadcastReceiver() {
             Log.i(TAG, it.messageBody)
             Log.i(TAG, it.originatingAddress)
 
-            val params = listOf(
-                    "channel" to "#sms",
-                    "text" to it.messageBody,
-                    "sender" to it.originatingAddress
+            val json = jsonObject(
+                    "response_type" to "in_channel",
+                    "text" to (it.messageBody ?: "") + " :calling: _" + (it.originatingAddress ?: "")+"_"
             )
-            Fuel.post("https://monger.herokuapp.com/sms/transfer", params)
+            Fuel.post("https://hooks.slack.com/services/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").body(json.toString())
                 .response { request, response, result ->
                     result.fold({ d ->
                         //do something with data

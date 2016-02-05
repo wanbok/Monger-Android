@@ -27,11 +27,13 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.github.kittinunf.fuel:fuel-android:0.71'
+    compile "com.github.kittinunf.fuel:fuel-android:$kotlin_version"
+    compile 'com.github.salomonbrys.kotson:kotson:2.0.0'
 }
 buildscript {
-    ext.kotlin_version = '1.0.0-beta-4589'
+    ext.kotlin_version = '1.0.0-rc-1036'
     repositories {
         mavenCentral()
     }
