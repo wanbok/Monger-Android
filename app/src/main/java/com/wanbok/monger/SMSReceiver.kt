@@ -45,20 +45,9 @@ class SMSReceiver: BroadcastReceiver() {
 
             val json = jsonObject(
                     "response_type" to "in_channel",
-                    "username" to "monger-bot",
+                    "username" to sender,
                     "icon_emoji" to ":email:",
-                    "text" to (it.messageBody ?: ""),
-                    "attachments" to jsonArray(
-                            jsonObject(
-                                    "color" to "#36a64f",
-                                    "fields" to jsonArray(
-                                            jsonObject(
-                                                    "title" to sender,
-                                                    "short" to true
-                                            )
-                                    )
-                            )
-                    )
+                    "text" to (it.messageBody ?: "")
             )
 
             if (url != null) {
