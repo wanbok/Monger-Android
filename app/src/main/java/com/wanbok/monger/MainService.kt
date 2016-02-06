@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 
 /**
@@ -21,7 +22,7 @@ class MainService: Service() {
         intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED")
         registerReceiver(smsReceive, intentFilter)
 
-        Toast.makeText(this, "Starting the Monger service.", Toast.LENGTH_LONG).show()
+        Log.i("MainService", "Starting the Monger service.")
     }
 
     override fun onDestroy() {
