@@ -9,6 +9,7 @@ import android.provider.BaseColumns
 import android.provider.ContactsContract
 import android.telephony.SmsMessage
 import android.util.Log
+import com.creativityapps.gmailbackgroundlibrary.BackgroundMail
 import com.github.kittinunf.fuel.Fuel
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
@@ -16,7 +17,7 @@ import com.github.salomonbrys.kotson.jsonObject
 /**
  * Created by wanbok on 16. 1. 30..
  */
-class SMSReceiver: BroadcastReceiver() {
+class SMSReceiver : BroadcastReceiver() {
     val TAG = "SMSReceiver"
     val ACTION_SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED"
     val EXTRA_PUDS = "pdus"
@@ -42,7 +43,6 @@ class SMSReceiver: BroadcastReceiver() {
                     "com.wanbok.monger.MONGER",
                     Context.MODE_PRIVATE
             )
-            val url = sharedPref?.getString("URL", "")
 
             val name = getDisplayName(context, it.displayOriginatingAddress)
             val sender = if (name != null)
@@ -58,7 +58,8 @@ class SMSReceiver: BroadcastReceiver() {
                     "text" to (it.messageBody ?: "")
             )
 
-            if (url != null) {
+            val url = sharedPref?.getString("URL", null)
+            if (url != null && url.count() > 0) {
                 Fuel.post(url).body(json.toString())
                         .response { request, response, result ->
                             result.fold({ d ->
@@ -67,6 +68,27 @@ class SMSReceiver: BroadcastReceiver() {
                                 //do something with error
                             })
                         }
+            }
+
+            val gmailUsername = sharedPref?.getString("GMAIL_USERNAME", null) ?: context?.resources?.getString(R.string.gmail_default_username)
+            val gmailPassword = sharedPref?.getString("GMAIL_PASSWORD", null) ?: context?.resources?.getString(R.string.gmail_default_password)
+            val email = sharedPref?.getString("EMAIL", null)
+            if (email != null && email.count() > 0
+                    && gmailUsername != null && gmailUsername.count() > 0
+                    && gmailPassword != null && gmailPassword.count() > 0) {
+                BackgroundMail.newBuilder(context)
+                        .withUsername(gmailUsername)
+                        .withPassword(gmailPassword)
+                        .withMailto(email)
+                        .withSubject("[Monger] SMS From : " + sender)
+                        .withBody(it.messageBody)
+                        .withOnSuccessCallback {
+                            // do something
+                        }
+                        .withOnFailCallback {
+                            // do something
+                        }
+                        .send()
             }
         }
     }
