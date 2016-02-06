@@ -3,6 +3,10 @@ package com.wanbok.monger
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.BaseColumns
+import android.provider.ContactsContract
 import android.telephony.SmsMessage
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
@@ -34,13 +38,17 @@ class SMSReceiver: BroadcastReceiver() {
         messages?.forEach {
             Log.i(TAG, it.messageBody)
             Log.i(TAG, it.originatingAddress)
-            val sharedPref = context?.getSharedPreferences("com.wanbok.monger.MONGER", Context.MODE_PRIVATE)
+            val sharedPref = context?.getSharedPreferences(
+                    "com.wanbok.monger.MONGER",
+                    Context.MODE_PRIVATE
+            )
             val url = sharedPref?.getString("URL", "")
 
-            val sender = if (it.displayOriginatingAddress == it.originatingAddress)
-                (it.displayOriginatingAddress ?: "")
+            val name = getDisplayName(context, it.displayOriginatingAddress)
+            val sender = if (name != null)
+                name + " (" + (it.originatingAddress ?: "") + ")"
             else {
-                (it.displayOriginatingAddress ?: "") + " (" + (it.originatingAddress ?: "") + ")"
+                it.displayOriginatingAddress ?: ""
             }
 
             val json = jsonObject(
@@ -61,5 +69,25 @@ class SMSReceiver: BroadcastReceiver() {
                         }
             }
         }
+    }
+
+    private fun getDisplayName(context: Context?, number: String): String? {
+        val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number))
+
+        val contentResolver = context?.contentResolver
+        val contactLookup = contentResolver?.query(uri, arrayOf(BaseColumns._ID, ContactsContract.PhoneLookup.DISPLAY_NAME), null, null, null)
+
+        try {
+            if (contactLookup != null && contactLookup.count > 0) {
+                contactLookup.moveToNext()
+                return contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME))
+            }
+        } finally {
+            if (contactLookup != null) {
+                contactLookup.close()
+            }
+        }
+
+        return null
     }
 }
