@@ -52,10 +52,12 @@ class SMSReceiver : BroadcastReceiver() {
             }
 
             val json = jsonObject(
-                    "response_type" to "in_channel",
-                    "username" to sender,
-                    "icon_emoji" to ":email:",
-                    "text" to (it.messageBody ?: "")
+                    "attachments" to jsonArray(
+                            jsonObject(
+                                    "footer" to sender,
+                                    "text" to (it.messageBody ?: "")
+                            )
+                    )
             )
 
             val url = sharedPref?.getString("URL", null)
